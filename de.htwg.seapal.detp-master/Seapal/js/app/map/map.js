@@ -435,4 +435,16 @@ if (wind==true) {
 	
 	wind=true;
 }
+
+function forecast(time) {
+	map.overlayMapTypes.push(new google.maps.ImageMapType({
+		getTileUrl: function (coord, zoom) {
+			if(zoom < 8){
+			return "http://www.openportguide.org/tiles/actual/air_temperature/"+ time +"/" + zoom + "/" + coord.x + "/" + coord.y + ".png";
+			}
+		},
+	tileSize: new google.maps.Size(256, 256),
+		name: "OpenSeaMap Air" + time,
+		maxZoom: 18
+	}));
 }

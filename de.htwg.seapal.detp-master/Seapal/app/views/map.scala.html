@@ -1,4 +1,4 @@
-@(header: Html)(header_app: Html)(navigation: Html)(navigation_app: Html)
+@(header: Html)(header_app: Html)(navigation: Html)(navigation_app: Html)(weatheronoff: Html)
 
 <!DOCTYPE html>
 
@@ -36,15 +36,7 @@
 		            <div id="route_distance">Routen-L&auml;nge: <span id="route_distance_number"></span> m</div>
 		        </div>
 		    </div>
-			<div id="myWeatherContainer">
-            	<div id="myWeather" class="well">
-            		<h4>Wetter-Daten</h4>
-	            	<div class="btn-group btn-group-vertical">
-	                    <input type="button" class="btn" value="Temperatur" id="Temperatur" class="routeButton" onclick="javascript: temperaturAnAus()" />
-	                    <input type="button" class="btn" value="Wind" id="Wind" class="routeButton" onclick="javascript: windAnAus()" />
-	                </div>
-	            </div>
-	        </div>
+			@weatheronoff
 		    
 		    <!-- Distance Menu -->
 		    <div id="distanceToolContainer">
