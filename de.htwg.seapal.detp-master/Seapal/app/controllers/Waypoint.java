@@ -12,6 +12,10 @@ import views.html.*;
 import views.html._include.*;
 
 public class Waypoint extends Controller {  
+	
+	public static Result insert() {
+		return null;
+	}
     
   public static Result load(int wnr) {
   

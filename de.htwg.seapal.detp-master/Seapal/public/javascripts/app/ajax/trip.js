@@ -82,7 +82,7 @@ $(function() {
 	        "tank": $('#tank').val()        
 	    };
 	
-	    jQuery.post("app_trip.html", json, function(data) { 
+	    jQuery.post("/app_trip_insert.html", json, function(data) { 
 	    
 	    	if (data['tnr'].match(/Error/)) {
 		    	
