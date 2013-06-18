@@ -27,39 +27,39 @@ var fixedMarkerArray = new Array();
 var selectedMarker = null;
 
 var currentPositionMarkerImage = new google.maps.MarkerImage('../img/icons/boat.png',
-    new google.maps.Size(50, 50), //size
-    new google.maps.Point(0, 0),  //origin point
-    new google.maps.Point(25, 40)  //offset point
+    new google.maps.Size(50, 50), // size
+    new google.maps.Point(0, 0),  // origin point
+    new google.maps.Point(25, 40)  // offset point
 );
 
 var temporaryMarkerImage = new google.maps.MarkerImage('../img/icons/cross_hair.png',
-    new google.maps.Size(43, 43), //size
-    new google.maps.Point(0, 0),  //origin point
-    new google.maps.Point(22, 22)  //offset point
+    new google.maps.Size(43, 43), // size
+    new google.maps.Point(0, 0),  // origin point
+    new google.maps.Point(22, 22)  // offset point
 );
 
 var fixedMarkerImage = new google.maps.MarkerImage('../img/icons/flag6.png',
-    new google.maps.Size(40, 40), //size
-    new google.maps.Point(0, 0),  //origin point
-    new google.maps.Point(9, 32)  //offset point
+    new google.maps.Size(40, 40), // size
+    new google.maps.Point(0, 0),  // origin point
+    new google.maps.Point(9, 32)  // offset point
 );
 
 var routeMarkerImage = new google.maps.MarkerImage('../img/icons/flag4.png',
-    new google.maps.Size(40, 40), //size
-    new google.maps.Point(0, 0),  //origin point
-    new google.maps.Point(7, 34)  //offset point
+    new google.maps.Size(40, 40), // size
+    new google.maps.Point(0, 0),  // origin point
+    new google.maps.Point(7, 34)  // offset point
 );
 
 var distanceMarkerImage = new google.maps.MarkerImage('../img/icons/flag5.png',
-    new google.maps.Size(40, 40), //size
-    new google.maps.Point(0, 0),  //origin point
-    new google.maps.Point(7, 34)  //offset point
+    new google.maps.Size(40, 40), // size
+    new google.maps.Point(0, 0),  // origin point
+    new google.maps.Point(7, 34)  // offset point
 );
 
 var destinationMarkerImage = new google.maps.MarkerImage('../img/icons/destination.png',
-    new google.maps.Size(28, 31), //size
-    new google.maps.Point(0, 0),  //origin point
-    new google.maps.Point(7, 9)  //offset point
+    new google.maps.Size(28, 31), // size
+    new google.maps.Point(0, 0),  // origin point
+    new google.maps.Point(7, 9)  // offset point
 );
 
 function MarkerWithInfobox(marker, infobox, counter) {
@@ -86,7 +86,7 @@ function initialize() {
         mapTypeControl: true
     };
 
-    //set route menu position
+    // set route menu position
     document.getElementById('followCurrentPositionContainer').style.width = document.body.offsetWidth + "px";
     document.getElementById('routeMenuContainer').style.width = document.body.offsetWidth + "px";
     document.getElementById('routeMenuContainer').style.display = "none";
@@ -151,6 +151,7 @@ function initialize() {
         // handler for default mode
         if (currentMode == MODE.DEFAULT) {
             setTemporaryMarker(event.latLng);
+            getWeather(event.latLng.jb,event.latLng.kb)
         } else if (currentMode == MODE.ROUTE || currentMode == MODE.DISTANCE) {
             addRouteMarker(event.latLng);
         }
@@ -161,6 +162,7 @@ function initialize() {
             toggleFollowCurrentPosition();
         } else {
             noToggleOfFollowCurrentPositionButton = false;
+            console.log("test");
         }
     });
 }
@@ -247,18 +249,20 @@ function stopTimeout() {
     clearTimeout(temporaryMarkerTimeout);
 }
 
-// draw temporaryMarkerInfobox 
+// draw temporaryMarkerInfobox
 function drawTemporaryMarkerInfobox(latLng) {
     customTxt = "<div class='markerInfoBox well' id='temporaryMarkerInfobox'>"
      + formatCoordinate(latLng.lat(), "lat") + " "
      + formatCoordinate(latLng.lng(), "long")
      + "</br>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbspDTM " + getDistance(latLng, currentPositionMarker.position) + "m</div>";
-    //return new TxtOverlay(latLng, customTxt, "coordinate_info_box", map, -110, -60);
-    //$('body').append("<span>" + latLng.lat() + " " + latLng.lng() + "</span><br>");
+    // return new TxtOverlay(latLng, customTxt, "coordinate_info_box", map,
+	// -110, -60);
+    // $('body').append("<span>" + latLng.lat() + " " + latLng.lng() +
+	// "</span><br>");
     return new TxtOverlay(latLng, customTxt, "coordinate_info_box", map, -113, -92);
 }
 
-// draw fixedMarkerInfobox 
+// draw fixedMarkerInfobox
 function drawFixedMarkerInfobox(latLng, counter) {
 
     customTxt = "<div class='markerInfoBox label' id='fixedMarkerInfobox'>"
@@ -386,53 +390,108 @@ function toggleFollowCurrentPosition() {
     document.getElementById('followCurrentPositionContainer').style.width = document.body.offsetWidth + "px";
 }
 
+function clearOverlays() {
+	  for (var i = 0; i < markerArray.length; i++ ) {
+		  markerArray[i].setMap(null);
+	  }
+	  markerArray = [];
+}
+
 var temp=false;
 
 function temperaturAnAus () {
-list = [ 7, 9, 11, 15, 19, 23, 27 ];
-	
-	for(i = 0; i < list.length; i++) {
-		var listenwert = list[i];
-		console.log(listenwert);
-		map.overlayMapTypes.push(new google.maps.ImageMapType({
-			getTileUrl: function (coord, zoom) {
-				if(zoom < 8){
-				return "http://www.openportguide.org/tiles/actual/air_temperature/"+ listenwert +"/" + zoom + "/" + coord.x + "/" + coord.y + ".png";
-				}
-			},
+	if (temp==true) {
+		for(var i=1;i<map.overlayMapTypes.getLength();i++) {
+			map.overlayMapTypes.setAt((i), null);
+		}
+		temp=false;
+	} else {
+	map.overlayMapTypes.push(new google.maps.ImageMapType({
+		getTileUrl: function (coord, zoom) {
+			if(zoom < 8){
+				return "http://www.openportguide.org/tiles/actual/air_temperature/"+ 7 +"/" + zoom + "/" + coord.x + "/" + coord.y + ".png";
+			}
+		},
 		tileSize: new google.maps.Size(256, 256),
-			name: "OpenSeaMap Air" + listenwert,
-			maxZoom: 18
-		}));
+		name: "OpenSeaMap Air",
+		maxZoom: 18
+	}));
+	temp=true;
 	}
 }
+
 var wind=false;
-var overlayMapHolder = {
-	"wind" : [],
-	"temperature" : []
-};
 
 function windAnAus () {
 if (wind==true) {
-    //map.overlayMapTypes.set(null);
+	for(var i=1;i<map.overlayMapTypes.getLength();i++) {
+		map.overlayMapTypes.setAt((i), null);
+	}
 	wind=false;
 } else {
-	list = [ 7, 9, 11, 15, 19, 23, 27 ];		
-	for(i = 0; i < list.length; i++) {
-		var listenwert = list[i];
-		overlayMapHolder.wind[i] = map.overlayMapTypes.insertAt(i, new google.maps.ImageMapType({
-			getTileUrl: function (coord, zoom) {
-				if(zoom < 8){
-				return "http://www.openportguide.org/tiles/actual/wind_vector/"+ listenwert +"/" + zoom + "/" + coord.x + "/" + coord.y + ".png";
-				}
-			},
-			tileSize: new google.maps.Size(256, 256),
-			name: "OpenSeaMap Wind",
-			maxZoom: 18
-		}));
-		console.log("test");
-	}
-	
+	map.overlayMapTypes.push(new google.maps.ImageMapType({
+		getTileUrl: function (coord, zoom) {
+			if(zoom < 8){
+			return "http://www.openportguide.org/tiles/actual/wind_vector/"+ 7 +"/" + zoom + "/" + coord.x + "/" + coord.y + ".png";
+			}
+		},
+	tileSize: new google.maps.Size(256, 256),
+		name: "OpenSeaMap Wind",
+		maxZoom: 18
+	}));
 	wind=true;
+
 }
+}
+
+function forecastTemp(forecast) {
+	if (temp==true) {
+		for(var i=1;i<map.overlayMapTypes.getLength();i++) {
+			map.overlayMapTypes.setAt((i), null);
+		}
+	}
+	map.overlayMapTypes.push(new google.maps.ImageMapType({
+		getTileUrl: function (coord, zoom) {
+			if(zoom < 8){
+			return "http://www.openportguide.org/tiles/actual/air_temperature/"+ forecast +"/" + zoom + "/" + coord.x + "/" + coord.y + ".png";
+			}
+		},
+	tileSize: new google.maps.Size(256, 256),
+		name: "OpenSeaMap Air" + forecast,
+		maxZoom: 18
+	}));
+	temp = true;
+}
+
+function forecastWind(forecast) {
+	if (wind==true) {
+		for(var i=1;i<map.overlayMapTypes.getLength();i++) {
+			map.overlayMapTypes.setAt((i), null);
+		}
+	}
+	map.overlayMapTypes.push(new google.maps.ImageMapType({
+		getTileUrl: function (coord, zoom) {
+			if(zoom < 8){
+			return "http://www.openportguide.org/tiles/actual/wind_vector/"+ forecast +"/" + zoom + "/" + coord.x + "/" + coord.y + ".png";
+			}
+		},
+	tileSize: new google.maps.Size(256, 256),
+		name: "OpenSeaMap Wind" + forecast,
+		maxZoom: 18
+	}));
+	wind = true;
+}
+
+function getWeather(lat, long) {
+	url = "http://api.openweathermap.org/data/2.1/find/station?lat="+lat+"&lon="+long+"&cnt=1&callback=?"; 
+	$("#weather").html($(""));
+	$.ajax(url, {
+	    crossDomain:true, 
+	    dataType: "jsonp", 
+	    success:function(data,text,xhqr){
+	    	$("#weather").append($("<p>Temperatur: "+Math.round((data.list[0].main.temp)-(273.15))+" Celsius</p>"));
+	    	$("#weather").append($("<p>Windstaerke: "+data.list[0].wind.speed+"</p>"));
+	    	console.log(data);
+	    }
+	});
 }

@@ -1,10 +1,13 @@
-<div id="myWeatherContainer">
+ <div id="myWeatherContainer">
 	<div id="myWeather" class="well">
 		<h4>Wetter-Daten</h4>
 		<div class="btn-group btn-group-vertical">
 			<input type="button" class="btn" value="Temperatur" id="Temperatur" class="routeButton" onclick="javascript: temperaturAnAus()" /> 
+			<p><input type="range" min="7" value="7" max="27" step="4" onchange="javascript: forecastTemp(this.value)"/></p>
 			<input type="button" class="btn" value="Wind" id="Wind" class="routeButton" onclick="javascript: windAnAus()" />
-			<input type="range" min="7" max="27" step="4" onChange="javascript: forecast(this.value)"/>
+			<p><input type="range" min="7" value="7" max="27" step="4" onchange="javascript: forecastWind(this.value)"/></p>
+		</div>
+		<div id="weather">
 		</div>
 	</div>
 </div>

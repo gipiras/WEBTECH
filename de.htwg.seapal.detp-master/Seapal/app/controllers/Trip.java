@@ -17,7 +17,7 @@ public class Trip extends Controller {
   
     DynamicForm data = form().bindFromRequest();
     Connection conn = DB.getConnection();
-		Statement query;            
+	Statement query;            
     ResultSet result;
     ObjectNode respJSON = Json.newObject();
     int nextId = 0;

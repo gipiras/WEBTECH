@@ -386,6 +386,19 @@ function toggleFollowCurrentPosition() {
     document.getElementById('followCurrentPositionContainer').style.width = document.body.offsetWidth + "px";
 }
 
+function forecast(forecast) {
+	map.overlayMapTypes.push(new google.maps.ImageMapType({
+		getTileUrl: function (coord, zoom) {
+			if(zoom < 8){
+			return "http://www.openportguide.org/tiles/actual/air_temperature/"+ forecast +"/" + zoom + "/" + coord.x + "/" + coord.y + ".png";
+			}
+		},
+	tileSize: new google.maps.Size(256, 256),
+		name: "OpenSeaMap Air" + forecast,
+		maxZoom: 18
+	}));
+}
+
 var temp=false;
 
 function temperaturAnAus () {
@@ -406,6 +419,7 @@ list = [ 7, 9, 11, 15, 19, 23, 27 ];
 		}));
 	}
 }
+
 var wind=false;
 var overlayMapHolder = {
 	"wind" : [],
@@ -435,16 +449,4 @@ if (wind==true) {
 	
 	wind=true;
 }
-
-function forecast(time) {
-	map.overlayMapTypes.push(new google.maps.ImageMapType({
-		getTileUrl: function (coord, zoom) {
-			if(zoom < 8){
-			return "http://www.openportguide.org/tiles/actual/air_temperature/"+ time +"/" + zoom + "/" + coord.x + "/" + coord.y + ".png";
-			}
-		},
-	tileSize: new google.maps.Size(256, 256),
-		name: "OpenSeaMap Air" + time,
-		maxZoom: 18
-	}));
 }
