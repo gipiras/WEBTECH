@@ -92,7 +92,7 @@ $(function() {
 	        "wtime": $('#wtime').val()         
 	    };
 	
-	    jQuery.post("app_tripinfo_insert.php", json, function(data) { 
+	    jQuery.post("/app_tripinfo_insert.html", json, function(data) { 
 	    
 	    	if (data['wnr'].match(/Error/)) {
 		    	

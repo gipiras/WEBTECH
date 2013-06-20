@@ -151,7 +151,7 @@ function initialize() {
         // handler for default mode
         if (currentMode == MODE.DEFAULT) {
             setTemporaryMarker(event.latLng);
-            getWeather(event.latLng.jb,event.latLng.kb)
+            getWeather(event.latLng.jb,event.latLng.kb);
         } else if (currentMode == MODE.ROUTE || currentMode == MODE.DISTANCE) {
             addRouteMarker(event.latLng);
         }
@@ -398,7 +398,6 @@ function clearOverlays() {
 }
 
 var temp=false;
-
 function temperaturAnAus () {
 	if (temp==true) {
 		for(var i=1;i<map.overlayMapTypes.getLength();i++) {
@@ -421,7 +420,6 @@ function temperaturAnAus () {
 }
 
 var wind=false;
-
 function windAnAus () {
 if (wind==true) {
 	for(var i=1;i<map.overlayMapTypes.getLength();i++) {
@@ -492,6 +490,39 @@ function getWeather(lat, long) {
 	    	$("#weather").append($("<p>Temperatur: "+Math.round((data.list[0].main.temp)-(273.15))+" Celsius</p>"));
 	    	$("#weather").append($("<p>Windstaerke: "+data.list[0].wind.speed+"</p>"));
 	    	console.log(data);
+	    	city=getCity(lat,long);
+	    	console.log(city);
+	    	var json = {
+	    	          "latitude": lat,
+	    	          "longitude": long,
+	    	          "temperature": Math.round((data.list[0].main.temp)-(273.15)),
+	    		      "wind": data.list[0].wind.speed,
+	    		      "datum": new Date(),
+	    		      "city" : city
+	    	};
+			jQuery.post("/app_weather_insert.html", json, function(data) { 
+			
+					console.log(data);
+				
+			}, "json");
 	    }
 	});
+}
+
+function getCity(lat,long) {
+	var city=null;
+	$.ajax({
+		type: 		"POST",
+		async:		false,
+		url: 		"http://maps.googleapis.com/maps/api/geocode/json?latlng="+(lat)+","+(long)+"&sensor=true",
+		dataType: 	"json",
+		success: 	function(data){
+			if(data.status=="ZERO_RESULTS") {
+				city = "Somewhere in the Water...";
+			} else {
+				city=data.results[0].formatted_address;
+			}
+		}
+	});
+	return city;
 }
